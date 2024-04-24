@@ -1,7 +1,7 @@
 import BubbleUtil from "./BubbleUtil.js";
 import BubbleManager from "./BubbleManager.js";
 import BubbleTester from "./BubbleTester.js";
-import MSYTParser from "./MSYTParser.js";
+import Parser from "./Parser.js";
 import PauseDuration from "./enums/PauseDuration.js";
 
 /** Manages the UI for an individual text box. */
@@ -249,94 +249,7 @@ export default class Bubble {
   }
 
   parsePastedContent(plaintext) {
-    // Convert certain characters to the variants used in-game
-    // (also remove some MSYT artifacts)
-    let replaceDict = {
-      "\\n": "\n",
-      "\\\\n": "\n",
-      '\\"': '"',
-      "--": "—",
-      "‘": "'",
-      "’": "'",
-      "…": "..."
-    };
-    for (const [key, val] of Object.entries(replaceDict)) {
-      plaintext = plaintext.replaceAll(key, val);
-    }
-    // If this is a text node, parse out the respective MSYT artifacts
-    if (plaintext.trim().startsWith('- text: "') && plaintext.trim().endsWith('"')) {
-      plaintext = plaintext.trim().slice(9, -1);
-    }
-    // Auto-split into multiple bubbles
-    let plaintextChunks = plaintext.split("\n");
-    let textLines = [];
-    plaintextChunks.forEach((chunk) => {
-      textLines = textLines.concat(BubbleTester.breakTextAtWrap(this, chunk));
-    });
-    let bubbleStartIndex = 0;
-    let bubbleManagerIndex = BubbleManager.bubbles.indexOf(this);
-    let lineIndex;
-    let setTextChunkToOffset = setTextChunkToOffsetFunc.bind(this);
-    for (lineIndex = 0; lineIndex < textLines.length; lineIndex++) {
-      let line = textLines[lineIndex];
-      let nextLine = textLines[lineIndex + 1];
-      let nextNextLine = textLines[lineIndex + 2];
-      let relativeLineIndex = lineIndex - bubbleStartIndex;
-      if (Bubble.lineIsPunctuated(line) && line != "") {
-        let isEndingLastLine = relativeLineIndex >= 2;
-        let isEndingSecondLine = relativeLineIndex == 1 && nextLine != undefined && !Bubble.lineIsPunctuated(nextLine);
-        let isEndingFirstLine =
-          relativeLineIndex == 0 &&
-          nextLine != undefined &&
-          !Bubble.lineIsPunctuated(nextLine) &&
-          nextNextLine != undefined &&
-          !Bubble.lineIsPunctuated(nextNextLine);
-        if (isEndingLastLine || isEndingSecondLine || isEndingFirstLine || !nextLine || nextLine == "") {
-          setTextChunkToOffset();
-        }
-      } else if (line == "") {
-        while (textLines[lineIndex] == "") {
-          textLines.splice(lineIndex, 1);
-        }
-        if (relativeLineIndex > 0) setTextChunkToOffset();
-        else lineIndex--;
-      } else if (lineIndex == textLines.length - 1) {
-        setTextChunkToOffset();
-      }
-    }
-    if (plaintext) document.execCommand("insertText", false, plaintext);
-
-    function setTextChunkToOffsetFunc() {
-      let textChunk = textLines.slice(bubbleStartIndex, lineIndex + 1).join("\n");
-      if (bubbleStartIndex > 0 && !BubbleManager.type.isSingleton) {
-        BubbleManager.addBubble(BubbleManager.bubbles[bubbleManagerIndex], textChunk);
-        bubbleManagerIndex++;
-      } else {
-        document.execCommand("insertText", false, textChunk);
-        plaintext = null;
-      }
-      bubbleStartIndex = lineIndex + 1;
-    }
-  }
-
-  /**
-   * Determines whether or not the input string ends in sentence-ending punctuation,
-   * accounting for quotation marks and parantheses.
-   * @param {string} line The string to test.
-   * @returns {boolean} Whether or not `line` is punctuated.
-   */
-  static lineIsPunctuated(line) {
-    let punctuation = [".", "?", "!"];
-    let exceptionEndings = ['"', "»", ")"];
-    return punctuation.some(
-      (p) =>
-        line.endsWith(p) ||
-        exceptionEndings.some(
-          (x) =>
-            line.endsWith(x) &&
-            (line.endsWith(p, line.length - 1) ||
-              exceptionEndings.some((x2) => line.endsWith(x2, line.length - 1) && line.endsWith(p, line.length - 2)))
-        )
-    );
+    const filteredText = Parser.filter(plaintext);
+    Parser.appendAsBubbles(filteredText, this);
   }
 }
