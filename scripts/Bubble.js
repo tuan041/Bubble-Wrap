@@ -60,101 +60,104 @@ export default class Bubble {
       });
     }
 
-    // Focus the bubble text input when any part of the bubble is clicked
-    this.element.addEventListener("mousedown", (e) => {
-      if (e.target == this.element) e.preventDefault(); // prevents unfocus on text when clicked
-      this.bubbleContentElement.focus();
-      // Ensure the cursor is inside the initial `<div>` when the bubble is empty
-      if (!this.bubbleContentElement.firstElementChild.textContent) {
-        getSelection().setPosition(this.bubbleContentElement.firstElementChild, 0);
-      }
-    });
+    // Add UI logic for visible bubbles
+    if (index > -1) {
+      // Focus the bubble text input when any part of the bubble is clicked
+      this.element.addEventListener("mousedown", (e) => {
+        if (e.target == this.element) e.preventDefault(); // prevents unfocus on text when clicked
+        this.bubbleContentElement.focus();
+        // Ensure the cursor is inside the initial `<div>` when the bubble is empty
+        if (!this.bubbleContentElement.firstElementChild.textContent) {
+          getSelection().setPosition(this.bubbleContentElement.firstElementChild, 0);
+        }
+      });
 
-    // If text is cleared, repopulate with a `<div>`
-    this.bubbleContentElement.addEventListener("keyup", () => {
-      if (this.bubbleContentElement.childNodes.length == 0) {
-        const newDiv = document.createElement("div");
-        this.bubbleContentElement.appendChild(newDiv);
-        getSelection().getRangeAt(0).setStart(newDiv, 0);
-      } else if (this.bubbleContentElement.childNodes.length == 1 && !this.bubbleContentElement.firstElementChild) {
-        // This content should be put in a node
-        const newDiv = document.createElement("div");
-        newDiv.textContent = this.bubbleContentElement.textContent;
-        this.bubbleContentElement.textContent = "";
-        this.bubbleContentElement.appendChild(newDiv);
-        getSelection().getRangeAt(0).selectNodeContents(newDiv);
-        getSelection().collapseToEnd();
-      }
-    });
+      // If text is cleared, repopulate with a `<div>`
+      this.bubbleContentElement.addEventListener("keyup", () => {
+        if (this.bubbleContentElement.childNodes.length == 0) {
+          const newDiv = document.createElement("div");
+          this.bubbleContentElement.appendChild(newDiv);
+          getSelection().getRangeAt(0).setStart(newDiv, 0);
+        } else if (this.bubbleContentElement.childNodes.length == 1 && !this.bubbleContentElement.firstElementChild) {
+          // This content should be put in a node
+          const newDiv = document.createElement("div");
+          newDiv.textContent = this.bubbleContentElement.textContent;
+          this.bubbleContentElement.textContent = "";
+          this.bubbleContentElement.appendChild(newDiv);
+          getSelection().getRangeAt(0).selectNodeContents(newDiv);
+          getSelection().collapseToEnd();
+        }
+      });
 
-    // Show formatting popup when text within bubble is selected
-    let textSelectTest = () => {
-      let selection = getSelection().getRangeAt(0);
-      // Check if the selection change is within a bubble
-      if (selection && !selection.collapsed && selection.endContainer.parentElement.closest(".bubble") == this.element) {
-        let parentRect = this.element.getBoundingClientRect();
-        let thisRect = this.bubbleFormattingOverlay.getBoundingClientRect();
-        let selectionRect = selection.getBoundingClientRect();
-        this.bubbleFormattingOverlay.style.bottom = parentRect.bottom - selectionRect.top + "px";
-        this.bubbleFormattingOverlay.style.left =
-          selectionRect.left + selectionRect.width / 2 - thisRect.width / 2 - parentRect.left + "px";
-        this.bubbleFormattingOverlay.classList.add("visible");
-        setTimeout(() => {
-          this.bubbleFormattingOverlay.style.transitionProperty = "opacity, transform, bottom, left";
-        }, 100);
-      } else {
-        this.bubbleFormattingOverlay.classList.remove("visible");
-        this.bubbleFormattingOverlay.style.transitionProperty = "opacity, transform";
-      }
-    };
-    document.addEventListener("selectionchange", textSelectTest);
-    document.addEventListener("mousedown", (e) => {
-      if (!this.element.contains(e.target) || e.target.closest(".btn-add-bubble-container")) {
-        this.bubbleFormattingOverlay.classList.remove("visible");
-        this.bubbleFormattingOverlay.style.transitionProperty = "opacity, transform";
-      }
-    });
+      // Show formatting popup when text within bubble is selected
+      let textSelectTest = () => {
+        let selection = getSelection().getRangeAt(0);
+        // Check if the selection change is within a bubble
+        if (selection && !selection.collapsed && selection.endContainer.parentElement.closest(".bubble") == this.element) {
+          let parentRect = this.element.getBoundingClientRect();
+          let thisRect = this.bubbleFormattingOverlay.getBoundingClientRect();
+          let selectionRect = selection.getBoundingClientRect();
+          this.bubbleFormattingOverlay.style.bottom = parentRect.bottom - selectionRect.top + "px";
+          this.bubbleFormattingOverlay.style.left =
+            selectionRect.left + selectionRect.width / 2 - thisRect.width / 2 - parentRect.left + "px";
+          this.bubbleFormattingOverlay.classList.add("visible");
+          setTimeout(() => {
+            this.bubbleFormattingOverlay.style.transitionProperty = "opacity, transform, bottom, left";
+          }, 100);
+        } else {
+          this.bubbleFormattingOverlay.classList.remove("visible");
+          this.bubbleFormattingOverlay.style.transitionProperty = "opacity, transform";
+        }
+      };
+      document.addEventListener("selectionchange", textSelectTest);
+      document.addEventListener("mousedown", (e) => {
+        if (!this.element.contains(e.target) || e.target.closest(".btn-add-bubble-container")) {
+          this.bubbleFormattingOverlay.classList.remove("visible");
+          this.bubbleFormattingOverlay.style.transitionProperty = "opacity, transform";
+        }
+      });
 
-    // When a formatting button is pressed, apply the formatting on selected text
-    Array.from(this.bubbleFormattingOverlay.children).forEach((el) => {
-      if (el.matches("button")) {
-        el.addEventListener("click", (e) => {
-          let range = getSelection().getRangeAt(0);
-          let color = e.currentTarget.getAttribute("data-color");
-          let size = e.currentTarget.getAttribute("data-size");
-          let newNode;
-          BubbleUtil.splitParentAndInsert(range, (formatContent, currentNode) => {
-            newNode = BubbleUtil.newTextNode(formatContent, {
-              color: color,
-              size: size,
-              node: currentNode
+      // When a formatting button is pressed, apply the formatting on selected text
+      Array.from(this.bubbleFormattingOverlay.children).forEach((el) => {
+        if (el.matches("button")) {
+          el.addEventListener("click", (e) => {
+            let range = getSelection().getRangeAt(0);
+            let color = e.currentTarget.getAttribute("data-color");
+            let size = e.currentTarget.getAttribute("data-size");
+            let newNode;
+            BubbleUtil.splitParentAndInsert(range, (formatContent, currentNode) => {
+              newNode = BubbleUtil.newTextNode(formatContent, {
+                color: color,
+                size: size,
+                node: currentNode
+              });
+              return newNode;
             });
-            return newNode;
+            range.setStartAfter(newNode);
           });
-          range.setStartAfter(newNode);
-        });
-      }
-    });
+        }
+      });
 
-    // Perform parsing on anything pasted into the bubble
-    this.bubbleContentElement.addEventListener("paste", (e) => this.parsePaste(e));
-    this.bubbleContentElement.addEventListener("drop", (e) => this.parseDrop(e));
+      // Perform parsing on anything pasted into the bubble
+      this.bubbleContentElement.addEventListener("paste", (e) => this.parsePaste(e));
+      this.bubbleContentElement.addEventListener("drop", (e) => this.parseDrop(e));
 
-    this.bubbleContentElement.addEventListener("input", () => this.inputHandler());
+      this.bubbleContentElement.addEventListener("input", () => this.inputHandler());
 
-    // When bubble add button is clicked, create a new bubble below this one
-    this.btnAddBubbleElement?.addEventListener("mousedown", (e) => {
-      BubbleManager.addBubble(this);
-    });
-    this.element.addEventListener("keydown", (e) => {
-      if (e.code == "Enter" && e.ctrlKey && !e.altKey && !BubbleManager.type.isSingleton) BubbleManager.addBubble(this);
-    });
+      // When bubble add button is clicked, create a new bubble below this one
+      this.btnAddBubbleElement?.addEventListener("mousedown", (e) => {
+        BubbleManager.addBubble(this);
+      });
+      this.element.addEventListener("keydown", (e) => {
+        if (e.code == "Enter" && e.ctrlKey && !e.altKey && !BubbleManager.type.isSingleton) BubbleManager.addBubble(this);
+      });
 
-    // When bubble delete button is clicked, delete this bubble
-    this.btnDelBubbleElement?.addEventListener("mousedown", (e) => {
-      BubbleManager.deleteBubble(this);
-      // if (confirm("Are you sure you want to delete this bubble? There is no undo!"))
-    });
+      // When bubble delete button is clicked, delete this bubble
+      this.btnDelBubbleElement?.addEventListener("mousedown", (e) => {
+        BubbleManager.deleteBubble(this);
+        // if (confirm("Are you sure you want to delete this bubble? There is no undo!"))
+      });
+    }
   }
 
   /**
