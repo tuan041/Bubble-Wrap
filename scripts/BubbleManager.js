@@ -7,7 +7,7 @@ import BubbleType from "./enums/BubbleType.js";
 export default class BubbleManager {
   static container = document.querySelector(".bubble-container");
   static template;
-  static type;
+  static type = BubbleTools.bubbleTypeElement.value;
 
   static wrappingBubble;
   static bubbles = [];
@@ -16,7 +16,7 @@ export default class BubbleManager {
   constructor() {
     BubbleManager.wrappingBubble = new Bubble(-1);
     BubbleManager.bubbles.push(new Bubble(0));
-    BubbleManager.updateType(BubbleTools.bubbleTypeElement.value);
+    BubbleManager.updateType(BubbleManager.type);
   }
 
   /**
@@ -42,7 +42,6 @@ export default class BubbleManager {
     parentBubble.element.classList.add("del-disabled");
     let newBubble = new Bubble(index, text);
     BubbleManager.bubbles.splice(index + 1, 0, newBubble);
-    BubbleManager.updateType(BubbleManager.type.className);
   }
 
   static deleteBubble(toDelete) {
@@ -80,17 +79,17 @@ export default class BubbleManager {
         return;
       }
     }
-    // Convert bubbles to the new type
+    // Switch to new type
     const oldType = BubbleManager.type;
     BubbleManager.type = typeObj;
+    if (oldType) BubbleManager.container.classList.remove(oldType.className);
+    BubbleManager.container.classList.add(typeObj.className);
+    if (typeObj.isSingleton) {
+      BubbleManager.container.classList.add("singleton");
+    } else {
+      BubbleManager.container.classList.remove("singleton");
+    }
     for (let bubble of BubbleManager.bubbles) {
-      if (oldType) bubble.element.classList.remove(oldType.className);
-      bubble.element.classList.add(typeObj.className);
-      if (typeObj.isSingleton) {
-        bubble.element.classList.add("singleton");
-      } else {
-        bubble.element.classList.remove("singleton");
-      }
       bubble.inputHandler(); // to recalculate overflow
     }
   }

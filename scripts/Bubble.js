@@ -21,23 +21,19 @@ export default class Bubble {
     this.element.innerHTML = BubbleManager.template;
     if (index == -1) {
       this.element.classList.add("test-bubble");
-      this.element.classList.add("dialogue");
-      document.body.appendChild(this.element);
+      BubbleManager.container.appendChild(this.element);
+    } else if (index < BubbleManager.bubbles.length) {
+      const indexBubble = BubbleManager.bubbles[index];
+      indexBubble.element.insertAdjacentElement("afterend", this.element);
+      index++;
     } else {
-      let indexBubble = BubbleManager.container.children[index];
-      if (indexBubble) {
-        indexBubble.insertAdjacentElement("afterend", this.element);
-        index++;
-      } else {
-        BubbleManager.container.appendChild(this.element);
-      }
+      BubbleManager.container.appendChild(this.element);
     }
 
     this.bubbleContentElement = this.element.querySelector(".bubble-content");
     this.bubbleFormattingOverlay = this.element.querySelector(".formatting-overlay");
     this.btnAddBubbleElement = this.element.querySelector(".btn-add-bubble");
     this.btnDelBubbleElement = this.element.querySelector(".btn-del-bubble");
-    this.bubbleFontSize = parseInt(window.getComputedStyle(this.bubbleContentElement).getPropertyValue("font-size"));
     this.bubbleValue = "";
     this.animation = "none";
     this.sound = "none";

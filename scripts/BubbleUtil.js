@@ -228,4 +228,13 @@ export default class BubbleUtil {
     newSpan.appendChild(nodeSelectElement);
     return newSpan;
   }
+
+  /**
+   * Gets the font size (in pixels) of the text content in the specified bubble.
+   * @param {Bubble} b The bubble to retrieve font size from.
+   * @returns An integer pixel count.
+   */
+  static getBubbleFontSize(b) {
+    return parseInt(window.getComputedStyle(b.bubbleContentElement).getPropertyValue("font-size"));
+  }
 }

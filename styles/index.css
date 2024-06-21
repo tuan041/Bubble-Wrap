@@ -344,44 +344,44 @@ label {
   background-color: var(--dialog-invalid-bg-color);
 }
 
-.bubble.dialogue,
-.bubble.signboard {
+.bubble-container.dialogue > .bubble,
+.bubble-container.signboard > .bubble {
   width: 566px;
   height: 107px;
 }
 
-.bubble.dialogue {
+.bubble-container.dialogue > .bubble {
   border-radius: calc(107px / 2);
 }
 
-.bubble.signboard {
+.bubble-container.signboard > .bubble {
   border-radius: 6px;
 }
 
-.bubble.item,
-.bubble.compendium,
-.bubble.questBOTW,
-.bubble.questTOTK {
+.bubble-container.item > .bubble,
+.bubble-container.compendium > .bubble,
+.bubble-container.questBOTW > .bubble,
+.bubble-container.questTOTK > .bubble {
   width: 508px;
 }
 
-.bubble.item {
+.bubble-container.item > .bubble {
   height: 150px;
 }
 
-.bubble.compendium {
+.bubble-container.compendium > .bubble {
   height: 275px;
 }
 
-.bubble.questBOTW {
+.bubble-container.questBOTW > .bubble {
   height: 325px;
 }
 
-.bubble.questTOTK {
+.bubble-container.questTOTK > .bubble {
   height: 250px;
 }
 
-.bubble.tip {
+.bubble-container.tip > .bubble {
   width: 634px;
   height: 100px;
 }
@@ -417,7 +417,7 @@ label {
   overflow: scroll;
 }
 
-.bubble:only-child
+.bubble:nth-child(1 of :not(.test-bubble)):nth-last-child(1 of :not(.test-bubble))
   .bubble-content:not(:focus)
   div:first-child:empty:not(:focus, .deleting .bubble-content, .test-bubble .bubble-content)::before {
   display: inline;
@@ -433,23 +433,23 @@ label {
   height: 1.25em;
 }
 
-.bubble.dialogue .bubble-content,
-.bubble.signboard .bubble-content {
+.bubble-container.dialogue > .bubble > .bubble-content,
+.bubble-container.signboard > .bubble > .bubble-content {
   padding-inline: calc(calc(100% - 438px) / 2);
   font-weight: bold;
 }
 
-.bubble.item .bubble-content,
-.bubble.compendium .bubble-content,
-.bubble.questBOTW .bubble-content,
-.bubble.questTOTK .bubble-content,
-.bubble.tip .bubble-content {
+.bubble-container.item > .bubble > .bubble-content,
+.bubble-container.compendium > .bubble > .bubble-content,
+.bubble-container.questBOTW > .bubble > .bubble-content,
+.bubble-container.questTOTK > .bubble > .bubble-content,
+.bubble-container.tip > .bubble > .bubble-content {
   align-self: flex-start;
   width: 100%;
   padding: 1.25em;
 }
 
-.bubble.tip .bubble-content {
+.bubble-container.tip > .bubble > .bubble-content {
   font-size: 16px;
   font-weight: bold;
 }

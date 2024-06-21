@@ -61,7 +61,7 @@ export default class BubbleTester {
   }
 
   /**
-   * Sorts text nodes into multiple lines using the given bubble's base text size
+   * Sorts text nodes into multiple lines using the currently set bubble type
    * to perform wrapping. Manual line breaks are preserved.
    * @param {Bubble} b The bubble containing the text nodes to wrap.
    * @returns {Array<Array<Node>>} A new set of nodes in the format returned by
@@ -100,7 +100,7 @@ export default class BubbleTester {
           let isFirstIteration = true;
           testString = "";
           // Test base font size * line spacing * max font modifier
-          while (wrappingBubbleContainer.offsetHeight <= b.bubbleFontSize * 1.25 * 1.25) {
+          while (wrappingBubbleContainer.offsetHeight <= BubbleUtil.getBubbleFontSize(b) * 1.25 * 1.25) {
             outputString = testString;
             if (!isFirstIteration) words.splice(0, 1);
             else isFirstIteration = false;
@@ -118,7 +118,7 @@ export default class BubbleTester {
               testString = "";
               newNode.textContent = "";
               // Test base font size * line spacing * max font modifier
-              while (wrappingBubbleContainer.offsetHeight <= b.bubbleFontSize * 1.25 * 1.25) {
+              while (wrappingBubbleContainer.offsetHeight <= BubbleUtil.getBubbleFontSize(b) * 1.25 * 1.25) {
                 outputWordString = testString;
                 if (outputWordString) word.splice(0, 1);
                 if (word.length == 0) break;
