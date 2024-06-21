@@ -70,7 +70,7 @@ export default class Parser {
     let plaintextChunks = plaintext.split("\n");
     let textLines = [];
     plaintextChunks.forEach((chunk) => {
-      textLines = textLines.concat(BubbleTester.breakTextAtWrap(parent, chunk));
+      textLines = textLines.concat(BubbleTester.breakTextAtWrap(chunk));
     });
     let bubbleStartIndex = 0;
     let bubbleManagerIndex = BubbleManager.bubbles.indexOf(parent);
