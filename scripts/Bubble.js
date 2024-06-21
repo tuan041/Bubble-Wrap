@@ -143,6 +143,7 @@ export default class Bubble {
       this.bubbleContentElement.addEventListener("drop", (e) => this.parseDrop(e));
 
       this.bubbleContentElement.addEventListener("input", () => this.inputHandler());
+      this.inputHandler(); // run once to evaluate overflow status
 
       // When bubble add button is clicked, create a new bubble below this one
       this.btnAddBubbleElement?.addEventListener("mousedown", (e) => {
