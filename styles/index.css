@@ -659,7 +659,7 @@ span[data-pause] .node-select:hover::before {
   display: none;
 }
 
-.bubble:only-child .btn-del-bubble,
+.bubble:nth-child(1 of :not(.test-bubble)):nth-last-child(1 of :not(.test-bubble)) .btn-del-bubble,
 .del-disabled .btn-del-bubble {
   display: none;
 }
