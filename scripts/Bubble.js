@@ -35,6 +35,8 @@ export default class Bubble {
     this.btnAddBubbleElement = this.element.querySelector(".btn-add-bubble");
     this.btnDelBubbleElement = this.element.querySelector(".btn-del-bubble");
     this.bubbleValue = "";
+    this.bubbleHeight = 0;
+    this.lineCount = 0;
     this.animation = "none";
     this.sound = "none";
 
@@ -192,7 +194,22 @@ export default class Bubble {
     for (const div of this.bubbleContentElement.childNodes) {
       charCount += div.textContent.length;
     }
-    const exceedsLineCount = BubbleTester.breakNodesAtWrap(this).length > BubbleManager.type.lineCount;
+    let bubbleHeight = 0;
+    for (const el of this.bubbleContentElement.children) {
+      bubbleHeight += el.offsetHeight;
+    }
+    if (this.bubbleHeight != bubbleHeight) {
+      // Cached line count is invalid, so recalculate
+      this.bubbleContentElement.classList.add("test-line-count");
+      this.lineCount = 0;
+      for (const el of this.bubbleContentElement.children) {
+        // Counts lines of text when display is set to inline
+        this.lineCount += el.getClientRects().length;
+      }
+      this.bubbleContentElement.classList.remove("test-line-count");
+      this.bubbleHeight = bubbleHeight;
+    }
+    const exceedsLineCount = this.lineCount > BubbleManager.type.lineCount;
     const exceedsCharLimit = BubbleManager.type.charLimit && charCount > BubbleManager.type.charLimit;
     if (exceedsLineCount || exceedsCharLimit) {
       // this.bubbleContentElement.innerHTML = this.bubbleValue;

@@ -417,6 +417,11 @@ label {
   overflow: scroll;
 }
 
+/* Allows efficient line counting via getClientRects() */
+.test-line-count div {
+  display: inline;
+}
+
 .bubble:nth-child(1 of :not(.test-bubble)):nth-last-child(1 of :not(.test-bubble))
   .bubble-content:not(:focus)
   div:first-child:empty:not(:focus, .deleting .bubble-content, .test-bubble .bubble-content)::before {
