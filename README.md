@@ -11,7 +11,9 @@ The editor works just like a regular text box -- eliminating guesswork and provi
 - NPC dialogue
 - Sign dialogs
 - Item descriptions (also accounts for the in-game character limit)
+- Hyrule Compendium entries
 - Quest logs
+- Loading screen tips
 
 ### Hassle-free control nodes
 
