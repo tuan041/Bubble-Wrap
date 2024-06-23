@@ -655,7 +655,7 @@ span[data-pause] .node-select:hover::before {
   height: calc(0.75rem * 3 / 2);
 }
 
-.bubble.singleton .btn-add-bubble {
+.singleton > .bubble .btn-add-bubble {
   display: none;
 }
 
