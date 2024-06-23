@@ -682,6 +682,11 @@ span[data-pause] .node-select:hover::before {
   visibility: hidden;
 }
 
+.wrap-test {
+  position: absolute;
+  white-space: nowrap;
+}
+
 .alertPopup {
   position: absolute;
   bottom: 0.5rem;

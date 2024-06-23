@@ -57,8 +57,7 @@ export default class BubbleTester {
         while (words.length > 0) {
           let isFirstIteration = true;
           testString = "";
-          // Test base font size * line spacing * max font modifier
-          while (wrappingBubbleContainer.offsetHeight <= BubbleUtil.getBubbleFontSize(b) * 1.25 * 1.25) {
+          while (!isTextWrapped()) {
             outputString = testString;
             if (!isFirstIteration) words.splice(0, 1);
             else isFirstIteration = false;
@@ -75,8 +74,7 @@ export default class BubbleTester {
             while (word.length > 0) {
               testString = "";
               newNode.textContent = "";
-              // Test base font size * line spacing * max font modifier
-              while (wrappingBubbleContainer.offsetHeight <= BubbleUtil.getBubbleFontSize(b) * 1.25 * 1.25) {
+              while (!isTextWrapped()) {
                 outputWordString = testString;
                 if (outputWordString) word.splice(0, 1);
                 if (word.length == 0) break;
@@ -117,6 +115,14 @@ export default class BubbleTester {
     function resetWrapContainer(newNode) {
       wrappingBubbleContainer.textContent = "";
       if (newNode) wrappingBubbleContainer.appendChild(newNode);
+    }
+
+    function isTextWrapped() {
+      // TODO: Reduce overhead of multiple redraws
+      wrappingBubbleContainer.classList.add("wrap-test");
+      const noWrapHeight = wrappingBubbleContainer.offsetHeight;
+      wrappingBubbleContainer.classList.remove("wrap-test");
+      return noWrapHeight < wrappingBubbleContainer.offsetHeight;
     }
   }
 }
