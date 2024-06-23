@@ -1,3 +1,4 @@
+import BubbleManager from "./BubbleManager.js";
 import Tests from "./enums/Tests.js";
 import Test from "./Test.js";
 
@@ -15,6 +16,10 @@ export default class TestSuite {
    * Runs all available tests.
    */
   run() {
+    // Store user-defined bubble type to re-apply later
+    const userType = BubbleManager.type;
+    BubbleManager.updateType("dialogue");
+    // Run tests
     for (const test of Tests) {
       const results = new Test(test.bubbles, test.outputs).evaluate();
       for (const key in results) {
@@ -38,6 +43,8 @@ export default class TestSuite {
         }
       }
     }
+    // Re-apply user-defined bubble type
+    BubbleManager.updateType(userType.className);
   }
 
   /** Shows a popup notification with the number of tests failed. */
