@@ -28,6 +28,8 @@ export default class Parser {
       "--": "—",
       "‘": "'",
       "’": "'",
+      "“": '"',
+      "”": '"',
       "…": "..."
     };
     for (const [key, val] of Object.entries(replaceDict)) {
@@ -48,7 +50,7 @@ export default class Parser {
    */
   static lineIsPunctuated(line) {
     let punctuation = [".", "?", "!"];
-    let exceptionEndings = ['"', "»", ")"];
+    let exceptionEndings = ['"', "»", "«", "›", "‹", ")"];
     return punctuation.some(
       (p) =>
         line.endsWith(p) ||
