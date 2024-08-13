@@ -426,7 +426,7 @@ label {
   .bubble-content:not(:focus)
   div:first-child:empty:not(:focus, .deleting .bubble-content, .test-bubble .bubble-content)::before {
   display: inline;
-  content: "Type text here and it will be wrapped automatically...";
+  content: "Nhập văn bản vào đây và nó sẽ tự động được ngắt dòng...";
   cursor: text;
   pointer-events: none;
   color: var(--dialog-text-white-color);
